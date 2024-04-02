@@ -28,6 +28,6 @@ public class CarDto {
 
     private MultipartFile  image;
 
-    private byte[] returnImage;
+    private byte[] returnedImage;
 
 }
