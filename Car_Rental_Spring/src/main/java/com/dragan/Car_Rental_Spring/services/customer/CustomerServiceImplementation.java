@@ -44,12 +44,18 @@ public class CustomerServiceImplementation implements CustomerService{
             bookACar.setCar(existingCar);
             bookACar.setBookCarStatus(BookCarStatus.PENDING);
             long diffInMilliSeconds = bookACarDto.getToDate().getTime() - bookACarDto.getFromDate().getTime();
-            long days = TimeUnit.MILLISECONDS.toDays(diffInMilliSeconds);
+            long days = TimeUnit.MICROSECONDS.toDays(diffInMilliSeconds);
             bookACar.setDays(days);
             bookACar.setPrice(existingCar.getPrice() * days);
             bookACarRepository.save(bookACar);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public CarDto getCarById(Long carId) {
+        Optional<Car> optionalCar = carRepository.findById(carId);
+        return optionalCar.map(Car::getCarDto).orElse(null);
     }
 }
