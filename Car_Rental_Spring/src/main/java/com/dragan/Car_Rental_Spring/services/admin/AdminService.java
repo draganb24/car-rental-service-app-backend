@@ -1,5 +1,6 @@
 package com.dragan.Car_Rental_Spring.services.admin;
 
+import com.dragan.Car_Rental_Spring.dto.BookACarDto;
 import com.dragan.Car_Rental_Spring.dto.CarDto;
 
 import java.io.IOException;
@@ -16,4 +17,8 @@ public interface AdminService {
     CarDto getCarById(Long id);
 
     boolean updateCar(Long carId, CarDto carDto) throws IOException;
+
+    List<BookACarDto> getBookings();
+
+    boolean changeBookingStatus(Long bookingId, String status);
 }

@@ -1,21 +1,28 @@
 package com.dragan.Car_Rental_Spring.services.admin;
 
+import com.dragan.Car_Rental_Spring.dto.BookACarDto;
 import com.dragan.Car_Rental_Spring.dto.CarDto;
+import com.dragan.Car_Rental_Spring.entity.BookACar;
 import com.dragan.Car_Rental_Spring.entity.Car;
+import com.dragan.Car_Rental_Spring.enums.BookCarStatus;
+import com.dragan.Car_Rental_Spring.repository.BookACarRepository;
 import com.dragan.Car_Rental_Spring.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AdminServiceImplementation implements AdminService{
+public class AdminServiceImplementation implements AdminService {
 
     private final CarRepository carRepository;
+
+    private final BookACarRepository bookACarRepository;
 
     @Override
     public boolean postCar(CarDto carDto) throws IOException {
@@ -33,7 +40,7 @@ public class AdminServiceImplementation implements AdminService{
             car.setImage(carDto.getImage().getBytes());
             carRepository.save(car);
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -57,9 +64,9 @@ public class AdminServiceImplementation implements AdminService{
     @Override
     public boolean updateCar(Long carId, CarDto carDto) throws IOException {
         Optional<Car> optionalCar = carRepository.findById(carId);
-        if(optionalCar.isPresent()) {
+        if (optionalCar.isPresent()) {
             Car existingCar = optionalCar.get();
-            if(carDto.getImage() != null)
+            if (carDto.getImage() != null)
                 existingCar.setImage(carDto.getImage().getBytes());
             existingCar.setPrice(carDto.getPrice());
             existingCar.setYear(carDto.getYear());
@@ -74,5 +81,25 @@ public class AdminServiceImplementation implements AdminService{
         } else {
             return false;
         }
+    }
+
+    @Override
+    public List<BookACarDto> getBookings() {
+        return bookACarRepository.findAll().stream().map(BookACar::getBookACarDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean changeBookingStatus(Long bookingId, String status) {
+        Optional<BookACar> optionalBookACar = bookACarRepository.findById(bookingId);
+        if(optionalBookACar.isPresent()) {
+            BookACar existingBookACar = optionalBookACar.get();
+            if(Objects.equals(status, "Approve"))
+                existingBookACar.setBookCarStatus(BookCarStatus.APPROVED);
+            else
+                existingBookACar.setBookCarStatus(BookCarStatus.REJECTED);
+            bookACarRepository.save(existingBookACar);
+            return true;
+        }
+        return false;
     }
 }
