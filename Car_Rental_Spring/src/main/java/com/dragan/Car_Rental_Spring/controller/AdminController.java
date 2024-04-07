@@ -2,6 +2,7 @@ package com.dragan.Car_Rental_Spring.controller;
 
 import com.dragan.Car_Rental_Spring.dto.BookACarDto;
 import com.dragan.Car_Rental_Spring.dto.CarDto;
+import com.dragan.Car_Rental_Spring.dto.SearchCarDto;
 import com.dragan.Car_Rental_Spring.services.admin.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -69,6 +70,11 @@ public class AdminController {
         boolean success = adminService.changeBookingStatus(bookingId, status);
         if(success) return ResponseEntity.ok().build();
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/car/search")
+    public ResponseEntity<?> searchCar(@RequestBody SearchCarDto searchCarDto) {
+        return ResponseEntity.ok(adminService.searchCar(searchCarDto));
     }
 
 }
